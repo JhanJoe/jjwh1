@@ -1,0 +1,40 @@
+<html>
+<head>
+    <title>會員系統</title>
+    <link href="../static/styles.css" rel="stylesheet">
+</head>
+<body>
+    <header>
+        <div class="title">歡迎光臨，這是會員頁</div>
+    </header>
+    
+    <div class="description">{{ name }}，歡迎登入系統</div>
+
+    <a class="description" href="/signout">登出系統</a>
+    
+    <hr/>
+
+    <form id="message" action="/createMessage" method="post">
+        <div class="small_title">快來留言吧</div>
+        <div class="input_message">
+            <div><label for="message">內容</label> <input type="text" name="message" id="message_input"></span></div>
+            <div><button type="submit">送出</button></div>
+        </div>
+    </form>
+
+    <hr/>
+    
+    <div class="messages">
+        {% for name, username, message, message_id in messages %}
+        <div class="message">
+            <strong>{{ name }}</strong>: {{ message }}
+            {% if username == request.session['user'] %}
+            <button onclick="confirmDelete('{{ message_id }}')">X</button>
+            {% endif %}
+        </div>
+        {% endfor %}
+    </div>
+
+    <script src="../static/scripts.js"></script>
+</body>
+</html>

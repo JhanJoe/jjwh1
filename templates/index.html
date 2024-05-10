@@ -1,0 +1,38 @@
+<html>
+<head>
+    <title>Index</title>
+    <link href="../static/styles.css" rel="stylesheet">
+</head>
+<body>
+    <header>
+        <div class="title">歡迎光臨，請註冊登入系統</div>
+    </header>
+
+    <div class="input_signup">
+        <div>註冊帳號</div>
+        <form id="signup" action="/signup" method="post">
+            <div class="input_signup_box">
+                <div><span><label for="name">姓名</label> <input type="text" name="name" id="name"></span></div>
+                <div><span><label for="signup_id">帳號</label> <input type="text" name="signup_id" id="signup_id"></span></div>
+                <div><span><label for="signup_password">密碼</label> <input type="password" name="signup_password" id="signup_password"></span></div>
+                <div><button type="submit">註冊</button></div>
+            </div>
+        </form>
+    </div>
+
+    <hr/>
+
+     <div class="input_signin">
+        <div>登入系统</div>
+        <form id="signin" action="/signin" method="post">
+            <div class="input_signin_box">
+                <div><label for="signin_id">帳號</label> <input type="text" name="signin_id" id="signin_id"></span></div>
+                <div><label for="signin_password">密碼</label> <input type="password" name="signin_password" id="signin_password"></span></div>
+                <div><button type="submit">登入</button></div>
+            </div>
+        </form>
+    </div>
+
+    <script src="../static/scripts.js"></script>
+</body>
+</html>
