@@ -1,0 +1,222 @@
+body, html {
+    font-size: 20px; 
+    margin:0; 
+}
+
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center; 
+    padding: 0 10px 0 10px;
+}
+    
+.desktop-menu {
+    display: flex;
+    justify-content: flex-end; 
+    gap: 20px;
+    list-style-type: none; 
+  }
+
+#burger, .popup-menu {
+    display: none;
+    cursor: pointer;
+}
+  
+
+.welcome {
+    display: flex;
+    justify-content: center; 
+    align-items: center; 
+    text-align: center;
+    background-color: lightblue;
+    height: 250px;
+    font-size: 2em; 
+    font-weight: bold;
+}
+
+.content{
+    display: flex;
+    max-width: 1200px;
+    margin: 50px auto 0 auto; 
+    justify-content: center; 
+}
+
+.smallbox{
+    margin: 10px; 
+    background-color: lightblue;
+    width:100%;
+    height:50px;
+    display: flex;
+}
+
+.smallboxpic{
+    width:80px;
+    object-fit: cover; 
+}
+
+.smallboxword{
+    flex:1;
+    text-align: left;
+    align-self: center;
+    padding-left:10px;
+    overflow: hidden;          
+    white-space: nowrap;       
+    text-overflow: ellipsis;   
+}
+
+.content2{
+    display: flex;
+    flex-wrap:wrap;
+    max-width: 1200px;   
+    margin: 0 auto 0 auto; 
+    justify-content: space-between; 
+}
+
+.largebox, .mediumbox {
+    position: relative;
+    background-color: lightgreen; 
+    height: 200px; 
+    margin: 10px; 
+}
+
+.largebox {
+    width: calc(100% / 3 - 20px); 
+}
+
+.mediumbox {
+    width: calc((100% / 3 - 20px - 20px) / 2); 
+}
+
+.boxpic {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.heart {
+    position: absolute;
+    top: 5px; 
+    right: 5px; 
+    width: 30px; 
+    height: 30px; 
+    opacity: 0.5; 
+}
+
+.overlay {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: rgba(0, 0, 0, 0.5); 
+    color: white; 
+    text-align: center;
+    padding: 10px 5px; 
+}
+
+.overlay .text {
+    overflow: hidden;          
+    white-space: nowrap;       
+    text-overflow: ellipsis;   
+}
+
+@media (min-width: 601px) and (max-width: 1200px) {
+    .content, .content2 {
+        width: 90%;
+        flex-wrap: wrap;
+        justify-content: space-between; 
+    }
+
+    .smallbox {
+        width: calc(50% - 20px); 
+        margin: 10px; 
+    }
+
+    .smallbox:nth-last-child(-n+1) {
+        width: 100%;
+    }
+
+    .largebox, .mediumbox {
+        width: calc(25% - 20px); 
+        margin: 10px; 
+    }
+
+    .largebox:nth-last-child(-n+2), .mediumbox:nth-last-child(-n+2) {
+        width: calc(50% - 20px); 
+    }
+}
+
+
+@media (min-width: 361px) and (max-width: 600px) {
+    .desktop-menu {
+        display: none;
+    }
+
+    #burger {
+        display: block;
+    }
+
+    .popup-menu {
+        display: none; 
+        position: fixed;
+        right: 0; 
+        top: 0; 
+        width: 50%; 
+        height: 100%; 
+        background-color: white; 
+        box-shadow: -8px 0 16px rgba(0,0,0,0.2); 
+        border-left: 1px solid #ccc; 
+        z-index: 1; 
+        overflow: auto; 
+    }
+
+    .popup-menu div {
+        display: block;
+        padding: 30px;
+        padding-top: 30px; 
+        text-decoration: none;
+        color: black;
+    }
+
+    .popup-menu .close-btn {
+        cursor: pointer; 
+        float: right;
+        right:10px;
+        top:0px;
+        padding: 0px;
+        font-size: 40px;
+        color: black;
+        text-decoration: none; 
+    }
+
+    .popup-menu ul{
+        padding-top:30px;
+    }
+
+    .popup-menu ul li {
+        font-size: 22px; 
+        margin-bottom: 15px; 
+        list-style-type: none; 
+    }
+      
+    .welcome {
+        font-size:30px;
+    }
+    .content, .content2 {
+        width: 90%;
+        flex-wrap: wrap;
+        justify-content: space-between; 
+    }
+
+    .smallbox {
+        width: 100%;
+        margin: 10px; 
+    }
+
+    .largebox, .mediumbox {
+        width: 100%;
+        margin: 10px; 
+    }
+
+}
+
+
