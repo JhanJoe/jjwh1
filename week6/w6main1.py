@@ -58,10 +58,10 @@ async def signin(request: Request, signin_id: str = Form(default=""), signin_pas
         cursor.execute("SELECT id, name, username, password FROM member WHERE username = %s", (signin_id,))
         user = cursor.fetchone()
         if user and user[3] == signin_password:
-            request.session['user_id'] = user[0]  # user id
-            request.session['user_name'] = user[1]  # name
-            request.session['user_username'] = user[2] # username          
-            print(user) #測試
+            request.session['user_id'] = user[0]  
+            request.session['user_name'] = user[1]  
+            request.session['user_username'] = user[2]         
+            # print(user) #測試
             return RedirectResponse(url="/member", status_code=303)
         else:
             error_message = quote("帳號或密碼輸入錯誤")
@@ -74,9 +74,9 @@ async def signin(request: Request, signin_id: str = Form(default=""), signin_pas
 
 @app.get("/signout")
 async def signout(request: Request):
-    request.session.pop('user_id', None)  # 移除 user_id
-    request.session.pop('user_name', None)  # 移除 user_name
-    request.session.pop('user_username', None)  # 移除 user_username
+    request.session.pop('user_id', None)  
+    request.session.pop('user_name', None)  
+    request.session.pop('user_username', None)  
     return RedirectResponse(url="/", status_code=303)
 
 @app.get("/error")
@@ -86,7 +86,6 @@ async def error_page(request: Request, message: str):
 @app.post("/createMessage")
 async def create_message(request: Request, message: str = Form('')):
     member_id = request.session.get('user_id')
-    # username = request.session.get('user')
     if not member_id:
         return RedirectResponse(url="/", status_code=303) 
 
@@ -110,18 +109,8 @@ async def member_page(request: Request):
 
     member_id = request.session.get('user_id')
     user_name = request.session.get('user_name')
-    print(member_id, user_name) #測試
     cursor = app.state.connection.cursor()
     try:
-        # cursor.execute("SELECT id, name FROM member WHERE username = %s", (username,))
-        # # member_id = cursor.fetchone()[0]
-        # user_info = cursor.fetchone()
-   
-        # if user_info:
-        #     member_id, user_name = user_info
-        #     # 將 member_id 作為 current_user_id 傳遞到模板
-
-             # 查詢所有留言，包括所有用戶的
         cursor.execute("""
             SELECT member.name, message.member_id, message.content, message.id
             FROM message 
@@ -130,12 +119,9 @@ async def member_page(request: Request):
         """)
         messages = cursor.fetchall()
             
-        # else:
-        #     messages = []
     finally:
         cursor.close()
 
-    # return templates.TemplateResponse("member.html", {"request": request, "name": user_name, "messages": messages})
     return templates.TemplateResponse("member.html", {"request": request, "name": user_name, "messages": messages, "current_user_id": member_id})
 
 @app.get("/deleteMessage")
