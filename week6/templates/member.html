@@ -25,11 +25,11 @@
     <hr/>
     
     <div class="messages">
-        {% for name, username, message, message_id in messages %}
+        {% for name, member_id, content, id in messages %}
         <div class="message">
-            <strong>{{ name }}</strong>: {{ message }}
-            {% if username == request.session['user'] %}
-            <button onclick="confirmDelete('{{ message_id }}')">X</button>
+            <strong>{{ name }}</strong>: {{ content }}
+            {% if member_id == current_user_id %}
+            <button onclick="confirmDelete('{{ id }}')">X</button>
             {% endif %}
         </div>
         {% endfor %}

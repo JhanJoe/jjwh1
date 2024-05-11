@@ -30,13 +30,13 @@ async def signup(request: Request, name: str = Form(default=""), signup_id: str 
     
     cursor = app.state.connection.cursor()
     try:
-        cursor.execute("SELECT username FROM week6 WHERE username = %s", (signup_id,))
+        cursor.execute("SELECT username FROM member WHERE username = %s", (signup_id,))
         user = cursor.fetchone()
         if user:
             error_message = quote("您欲申請的帳號已存在，無法註冊") 
             return RedirectResponse(url=f"/error?message={error_message}", status_code=303)
         else:
-            cursor.execute("INSERT INTO week6 (name, username, password) VALUES (%s, %s, %s)",
+            cursor.execute("INSERT INTO member (name, username, password) VALUES (%s, %s, %s)",
                            (name, signup_id, signup_password))
             app.state.connection.commit()
     except mysql.connector.Error as err:
@@ -55,10 +55,13 @@ async def read_root(request: Request):
 async def signin(request: Request, signin_id: str = Form(default=""), signin_password: str = Form(default="")):
     cursor = app.state.connection.cursor()
     try:
-        cursor.execute("SELECT name, username, password FROM week6 WHERE username = %s", (signin_id,))
+        cursor.execute("SELECT id, name, username, password FROM member WHERE username = %s", (signin_id,))
         user = cursor.fetchone()
-        if user and user[2] == signin_password:
-            request.session['user'] = user[1] 
+        if user and user[3] == signin_password:
+            request.session['user_id'] = user[0]  # user id
+            request.session['user_name'] = user[1]  # name
+            request.session['user_username'] = user[2] # username          
+            print(user) #測試
             return RedirectResponse(url="/member", status_code=303)
         else:
             error_message = quote("帳號或密碼輸入錯誤")
@@ -71,7 +74,9 @@ async def signin(request: Request, signin_id: str = Form(default=""), signin_pas
 
 @app.get("/signout")
 async def signout(request: Request):
-    request.session.pop('user', None)  
+    request.session.pop('user_id', None)  # 移除 user_id
+    request.session.pop('user_name', None)  # 移除 user_name
+    request.session.pop('user_username', None)  # 移除 user_username
     return RedirectResponse(url="/", status_code=303)
 
 @app.get("/error")
@@ -80,14 +85,16 @@ async def error_page(request: Request, message: str):
 
 @app.post("/createMessage")
 async def create_message(request: Request, message: str = Form('')):
-    username = request.session.get('user')
-    if not username:
+    member_id = request.session.get('user_id')
+    # username = request.session.get('user')
+    if not member_id:
         return RedirectResponse(url="/", status_code=303) 
 
     cursor = app.state.connection.cursor()
     try:
-        cursor.execute("INSERT INTO week6message (username, message) VALUES (%s, %s)",
-                       (username, message))
+        # 使用 member_id 插入 message
+        cursor.execute("INSERT INTO message (member_id, content) VALUES (%s, %s)",
+                       (member_id, message))
         app.state.connection.commit()
     except mysql.connector.Error as err:
         return RedirectResponse(url="/error?message=" + quote("留言儲存失敗"), status_code=303)
@@ -98,42 +105,51 @@ async def create_message(request: Request, message: str = Form('')):
 
 @app.get("/member")
 async def member_page(request: Request):
-    if 'user' not in request.session:
+    if 'user_username' not in request.session:
         return RedirectResponse(url="/", status_code=303)
 
-    username = request.session['user']
+    member_id = request.session.get('user_id')
+    user_name = request.session.get('user_name')
+    print(member_id, user_name) #測試
     cursor = app.state.connection.cursor()
     try:
-        cursor.execute("SELECT name FROM week6 WHERE username = %s", (username,))
-        user_name = cursor.fetchone()
+        # cursor.execute("SELECT id, name FROM member WHERE username = %s", (username,))
+        # # member_id = cursor.fetchone()[0]
+        # user_info = cursor.fetchone()
    
-        if user_name:
-            cursor.execute("""
-                SELECT w6.name, wm.username, wm.message, wm.message_id
-                FROM week6message wm
-                JOIN week6 w6 ON wm.username = w6.username
-                ORDER BY wm.message_time DESC
-            """)
-            messages = cursor.fetchall()
-        else:
-            messages = []
+        # if user_info:
+        #     member_id, user_name = user_info
+        #     # 將 member_id 作為 current_user_id 傳遞到模板
+
+             # 查詢所有留言，包括所有用戶的
+        cursor.execute("""
+            SELECT member.name, message.member_id, message.content, message.id
+            FROM message 
+            JOIN member ON member.id = message.member_id
+            ORDER BY message.time DESC
+        """)
+        messages = cursor.fetchall()
+            
+        # else:
+        #     messages = []
     finally:
         cursor.close()
 
-    return templates.TemplateResponse("member.html", {"request": request, "name": user_name[0], "messages": messages})
+    # return templates.TemplateResponse("member.html", {"request": request, "name": user_name, "messages": messages})
+    return templates.TemplateResponse("member.html", {"request": request, "name": user_name, "messages": messages, "current_user_id": member_id})
 
 @app.get("/deleteMessage")
 async def delete_message(request: Request, message_id: int):
-    username = request.session.get('user')
-    if not username:
+    user_id = request.session.get('user_id')
+    if not user_id:
         return RedirectResponse(url="/", status_code=303)
 
     cursor = app.state.connection.cursor()
     try:
-        cursor.execute("SELECT username FROM week6message WHERE message_id = %s", (message_id,))
+        cursor.execute("SELECT member_id FROM message WHERE id = %s", (message_id,))
         message_user = cursor.fetchone()
-        if message_user and message_user[0] == username:
-            cursor.execute("DELETE FROM week6message WHERE message_id = %s", (message_id,))
+        if message_user and message_user[0] == int(user_id):  # 確保比較的是相同類型的數據，都是 id
+            cursor.execute("DELETE FROM message WHERE id = %s", (message_id,))
             app.state.connection.commit()
         else:
             return RedirectResponse(url="/error?message=" + quote("無權刪除該留言"), status_code=303)
