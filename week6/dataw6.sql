@@ -30,7 +30,7 @@ CREATE TABLE `member` (
   `follower_count` int unsigned NOT NULL DEFAULT '0',
   `time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -39,7 +39,7 @@ CREATE TABLE `member` (
 
 LOCK TABLES `member` WRITE;
 /*!40000 ALTER TABLE `member` DISABLE KEYS */;
-INSERT INTO `member` VALUES (1,'test2','test','test',0,'2024-04-30 21:05:51'),(2,'江戶川柯南','柯南','4869',1012234,'2024-04-30 21:14:18'),(3,'毛利蘭','小蘭','05',142455,'2024-04-30 21:14:18'),(4,'Gin','黑衣人','7',80,'2024-04-30 21:14:18'),(5,'目暮十三','警官','13',135,'2024-04-30 21:14:18');
+INSERT INTO `member` VALUES (1,'test2','test','test',0,'2024-04-30 21:05:51'),(2,'江戶川柯南','柯南','4869',1012234,'2024-04-30 21:14:18'),(3,'毛利蘭','小蘭','05',142455,'2024-04-30 21:14:18'),(4,'Gin','黑衣人','7',80,'2024-04-30 21:14:18'),(5,'目暮十三','警官','13',135,'2024-04-30 21:14:18'),(6,'a','a','a',0,'2024-05-11 12:30:13');
 /*!40000 ALTER TABLE `member` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -59,7 +59,7 @@ CREATE TABLE `message` (
   PRIMARY KEY (`id`),
   KEY `member_id` (`member_id`),
   CONSTRAINT `message_ibfk_1` FOREIGN KEY (`member_id`) REFERENCES `member` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -68,7 +68,7 @@ CREATE TABLE `message` (
 
 LOCK TABLES `message` WRITE;
 /*!40000 ALTER TABLE `message` DISABLE KEYS */;
-INSERT INTO `message` VALUES (1,2,'東京死神',10077,'2024-05-01 14:46:58'),(2,1,'彭彭就是讚',30004,'2024-05-01 14:46:58'),(3,1,'看彭彭寫code好療癒',1588,'2024-05-01 14:46:58'),(4,4,'整個組織只有你認真工作',5555,'2024-05-01 14:46:58'),(5,3,'人間兵器',4432,'2024-05-01 14:46:58'),(6,2,'阿勒勒',752,'2024-05-01 14:46:58');
+INSERT INTO `message` VALUES (1,2,'東京死神',10077,'2024-05-01 14:46:58'),(2,1,'彭彭就是讚',30004,'2024-05-01 14:46:58'),(3,1,'看彭彭寫code好療癒',1588,'2024-05-01 14:46:58'),(4,4,'整個組織只有你認真工作',5555,'2024-05-01 14:46:58'),(7,3,'空手道冠軍',0,'2024-05-11 13:53:58'),(8,3,'東京',0,'2024-05-11 13:54:19'),(9,2,'快給我解藥',0,'2024-05-11 13:59:29'),(10,4,'這麼遠也可以',0,'2024-05-11 14:00:42'),(11,6,'路人',0,'2024-05-11 14:01:50');
 /*!40000 ALTER TABLE `message` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -87,7 +87,7 @@ CREATE TABLE `week6` (
   `time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`member_id`),
   UNIQUE KEY `username` (`username`)
-) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -137,4 +137,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2024-05-10 23:48:41
+-- Dump completed on 2024-05-11 14:07:29
