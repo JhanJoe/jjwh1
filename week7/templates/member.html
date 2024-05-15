@@ -1,0 +1,65 @@
+<html>
+<head>
+    <title>會員系統</title>
+    <link href="../static/styles.css" rel="stylesheet">
+</head>
+<body>
+    <header>
+        <div class="title">歡迎光臨，這是會員頁</div>
+    </header>
+    
+    <div class="description">{{ name }}，歡迎登入系統</div>
+
+    <a class="description" href="/signout">登出系統</a>
+    
+    <hr/>
+
+    <form id="message" action="/createMessage" method="post">
+        <div class="small_title">快來留言吧</div>
+        <div class="input_message">
+            <div><label for="message">內容</label> <input type="text" name="message" id="message_input"></span></div>
+            <div><button type="submit">送出</button></div>
+        </div>
+    </form>
+
+    <hr/>
+    
+    <div class="messages">
+        {% for name, member_id, content, id in messages %}
+        <div class="message">
+            <strong>{{ name }}</strong>: {{ content }}
+            {% if member_id == current_user_id %}
+            <button onclick="confirmDelete('{{ id }}')">X</button>
+            {% endif %}
+        </div>
+        {% endfor %}
+    </div>
+
+    <hr/>
+
+    <form id="query" method="get">
+        <div class="small_title">查詢會員姓名</div>
+        <div class="input_query">
+            <div class=form_controls>
+                <input type="text" name="queryname" id="query_input">
+                <button type="submit">查詢</button>
+            </div>
+            <div id="query_result" style="font-weight:bold; color:blue; display:block;"></div>
+        </div>
+    </form>
+
+    <form id="update_name" action="/api/member" method="patch">
+        <div class="small_title">更新我的姓名</div>
+        <div class="input_new_name">
+            <div class=form_controls>
+                <input type="text" name="newname" id="new_name_input">
+                <button type="submit">更新</button>
+            </div> 
+            <div id="update_status" style="display:block;">{更新成功}</div>
+        </div>
+    </form>
+
+
+    <script src="../static/scripts.js"></script>
+</body>
+</html>
