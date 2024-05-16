@@ -160,7 +160,6 @@ async def member_query(request: Request, username: str):
         cursor.execute("SELECT id, name, username FROM member WHERE username = %s", (username,))
         user = cursor.fetchone()
         if user:
-            # print(user)
             return {"data": {"id": user['id'], "name": user['name'], "username": user['username']}} 
         else:
             return {"data": None}
