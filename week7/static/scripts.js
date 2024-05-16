@@ -29,7 +29,7 @@ document.addEventListener("DOMContentLoaded", function () {
 });
 
 document.getElementById('query').addEventListener('submit', function(event) {
-    event.preventDefault(); // 防止表單提交刷新頁面
+    event.preventDefault(); 
 
     let queryInput = document.getElementById('query_input').value.trim();
     if (queryInput === "") {
@@ -55,4 +55,33 @@ document.getElementById('query').addEventListener('submit', function(event) {
         });
 });
 
+document.getElementById('update_name').addEventListener('submit', function(event) {
+    event.preventDefault();
 
+    let newName = document.getElementById('new_name_input').value.trim();
+    if (newName === "") {
+        alert("名稱不得為空");
+        return;
+    }
+
+    fetch('/api/member', {
+        method: 'PATCH', 
+        headers: {
+            'Content-Type': 'application/json', 
+        },
+        body: JSON.stringify({ name: newName }) 
+    })
+    .then(response => response.json()) 
+    .then(data => {
+        let updateStatus = document.getElementById('update_status');
+        if (data.ok) {
+            updateStatus.innerHTML = "更新成功"; 
+        } else {
+            updateStatus.innerHTML = "更新失敗"; 
+        }
+    })
+    .catch(error => {
+        console.error('Error updating name:', error);
+        document.getElementById('update_status').innerHTML = "更新過程中發生錯誤";
+    });
+});

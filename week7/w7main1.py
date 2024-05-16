@@ -1,8 +1,9 @@
-from fastapi import FastAPI, Form, Request
-from starlette.responses import RedirectResponse, HTMLResponse, JSONResponse
+from fastapi import FastAPI, Form, Request, Body
+from starlette.responses import RedirectResponse, JSONResponse
 from starlette.middleware.sessions import SessionMiddleware
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
+from pydantic import BaseModel
 from urllib.parse import quote
 import mysql.connector
 
@@ -91,7 +92,6 @@ async def create_message(request: Request, message: str = Form('')):
 
     cursor = app.state.connection.cursor()
     try:
-        # 使用 member_id 插入 message
         cursor.execute("INSERT INTO message (member_id, content) VALUES (%s, %s)",
                        (member_id, message))
         app.state.connection.commit()
@@ -134,7 +134,7 @@ async def delete_message(request: Request, message_id: int):
     try:
         cursor.execute("SELECT member_id FROM message WHERE id = %s", (message_id,))
         message_user = cursor.fetchone()
-        if message_user and message_user[0] == int(user_id):  # 確保比較的是相同類型的數據，都是 id
+        if message_user and message_user[0] == int(user_id):  
             cursor.execute("DELETE FROM message WHERE id = %s", (message_id,))
             app.state.connection.commit()
         else:
@@ -160,11 +160,39 @@ async def member_query(request: Request, username: str):
         cursor.execute("SELECT id, name, username FROM member WHERE username = %s", (username,))
         user = cursor.fetchone()
         if user:
-            print(user)
+            # print(user)
             return {"data": {"id": user['id'], "name": user['name'], "username": user['username']}} 
         else:
             return {"data": None}
     except mysql.connector.Error:
-        return {"data": None}  # 內部錯誤也返回 data: null
+        return {"data": None}  
     finally:
         cursor.close()
+
+
+class UpdateNameRequest(BaseModel):
+    name: str
+
+@app.patch("/api/member")
+async def update_member_name(request: Request, update_request: UpdateNameRequest = Body(...)):
+    user_id = request.session.get('user_id')
+    if not user_id:
+        return JSONResponse(status_code=400, content={"error": True})
+    name = update_request.name
+    if not name:
+        return JSONResponse(status_code=400, content={"error": True})
+
+    cursor = app.state.connection.cursor()
+    try:
+        cursor.execute("UPDATE member SET name = %s WHERE id = %s", (name, user_id))
+        app.state.connection.commit()
+
+        if cursor.rowcount == 0:
+            return JSONResponse(status_code=404, content={"error": True})
+        else:
+            return JSONResponse(status_code=200, content={"ok": True})
+    except mysql.connector.Error as err:
+        return JSONResponse(status_code=500, content={"error": True})
+    finally:
+        cursor.close()
+
